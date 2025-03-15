@@ -8,15 +8,30 @@ TODO:
 - Bonus: if at any point an error is returned, render the default gifs again.
 */
 
-import defaultGifs from '../gifs.json';
-import { getGifsBySearch, getTrendingGifs } from '../adapters/giphyAdapters';
+import defaultGifs from "../gifs.json";
+import { getGifsBySearch, getTrendingGifs } from "../adapters/giphyAdapters";
+import { useState, useEffect } from "react";
 
 const GifContainer = () => {
-    return (
-        <ul>
+  const [gifs, setGifs] = useState(getTrendingGifs);
 
-        </ul>
-    )
-}
+  useEffect(() => {
+    const fetchTrendingGifs = async () => {
+      const data = await getTrendingGifs();
+      if (data) setGifs(data.data);
+    };
+    fetchTrendingGifs();
+  }, []);
 
-export default GifContainer
+  return (
+    <ul>
+      {Object.values(gifs).map((gif) => (
+        <li key={gif.id} style={{ margin: "10px" }}>
+          <img src={gif.images.original.url} alt={gif.title} width="200" />
+        </li>
+      ))}
+    </ul>
+  );
+};
+
+export default GifContainer;

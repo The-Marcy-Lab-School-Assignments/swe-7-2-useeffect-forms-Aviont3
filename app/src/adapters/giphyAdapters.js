@@ -13,26 +13,24 @@ const baseUrl = "https://api.giphy.com/v1/gifs";
 // Send a fetch request to the /trending endpoint and return the top 3 results
 export const getTrendingGifs = async () => {
   const [data, error] = await handleFetch(
-    `${baseUrl}/trending?api_key=${API_KEY}&limit=3&rating=g`
+    `${baseUrl}/trending?api_key=${API_KEY}&rating=g`
   );
   if (error) {
-    return console.log(error);
+    return [[], error];
   }
   // no error means that our data was fetched!
   console.log(data);
-  return data;
+  return [data.data.slice(0, 3), null];
 };
 
 // Send a fetch request to the /search endpoint with the given term as a query parameter
 
 export const getGifsBySearch = async (term) => {
-  const [data, error] = await handleFetch(
-    `${baseUrl}/search?api_key=${API_KEY}&q=${term}&rating=g`
-  );
-  if (error) {
-    return console.log(error);
-  }
+  const url = `${baseUrl}/search?api_key=${API_KEY}&q=${term}&rating=g`;
+  const [data, error] = await handleFetch(url);
+  if (error) throw error;
+  // return data.data;
   // no error means that our data was fetched!
   //console.log(data);
-  return data;
+  return [data.data.slice(0, 3), null];
 };

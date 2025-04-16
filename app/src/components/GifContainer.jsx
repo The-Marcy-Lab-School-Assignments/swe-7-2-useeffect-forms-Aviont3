@@ -12,24 +12,28 @@ import defaultGifs from "../gifs.json";
 import { getGifsBySearch, getTrendingGifs } from "../adapters/giphyAdapters";
 import { useState, useEffect } from "react";
 
-const GifContainer = () => {
-  const [gifs, setGifs] = useState(getTrendingGifs);
-
+const GifContainer = ({ gifs, setGifs }) => {
   useEffect(() => {
-    const fetchTrendingGifs = async () => {
-      const data = await getTrendingGifs();
-      if (data) setGifs(data.data);
+    const doFetch = async () => {
+      let [data, error] = await getTrendingGifs();
+      // if (error) {
+      //   console.log(error);
+      //   return null;
+      // }
+      console.log(data);
+      setGifs(data);
     };
-    fetchTrendingGifs();
+    doFetch();
   }, []);
 
   return (
     <ul>
-      {Object.values(gifs).map((gif) => (
-        <li key={gif.id} style={{ margin: "10px" }}>
-          <img src={gif.images.original.url} alt={gif.title} width="200" />
-        </li>
-      ))}
+      {gifs &&
+        gifs.map((gif) => (
+          <li key={gif.id} style={{ margin: "10px" }}>
+            <img src={gif.images.original.url} alt={gif.title} width="200" />
+          </li>
+        ))}
     </ul>
   );
 };
